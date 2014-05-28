@@ -1,0 +1,7 @@
+## Title: ItemSort
+## Author: Wobin
+## Version: @project-version@
+## APIVersion: 100004
+
+ItemSort.lua
+ItemSort.xml

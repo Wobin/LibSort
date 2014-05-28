@@ -1,0 +1,44 @@
+<GuiXml>
+    <Controls>
+        <Control name="ItemSortBank" inherits="ZO_SortHeaderIcon">
+            <Dimensions x="16" y="32" />
+            <Anchor point="RIGHT" offsetX="-15" relativeTo="ZO_PlayerBankSortByName" relativePoint="LEFT"/>
+            <OnInitialized>
+                ZO_SortHeader_SetMouseCallback(self,    function(header, eventType)
+                                                            if(eventType == "OnMouseEnter") then
+                                                                InitializeTooltip(InformationTooltip, self, BOTTOMRIGHT, 0, 32)
+                                                                SetTooltipText(InformationTooltip, "Sort")
+                                                            else
+                                                                ClearTooltip(InformationTooltip)
+                                                            end
+                                                        end)
+                ZO_PlayerInventory_InitSortHeaderIcon(self, 
+                                    "EsoUI/Art/Miscellaneous/list_sortHeader_icon_neutral.dds", 
+                                    "EsoUI/Art/Miscellaneous/list_sortHeader_icon_sortUp.dds", 
+                                    "EsoUI/Art/Miscellaneous/list_sortHeader_icon_sortDown.dds", 
+                                    "EsoUI/Art/Miscellaneous/list_sortHeader_icon_over.dds", 
+                                    "age")                                                        
+            </OnInitialized>
+        </Control>
+        <Control name="ItemSortGuild" inherits="ZO_SortHeaderIcon">
+            <Dimensions x="16" y="32" />
+            <Anchor point="RIGHT" offsetX="-15" relativeTo="ZO_GuildBankSortByName" relativePoint="LEFT"/>
+            <OnInitialized>
+                ZO_SortHeader_SetMouseCallback(self,    function(header, eventType)
+                                                            if(eventType == "OnMouseEnter") then
+                                                                InitializeTooltip(InformationTooltip, self, BOTTOMRIGHT, 0, 32)
+                                                                SetTooltipText(InformationTooltip, "Sort")
+                                                            else
+                                                                ClearTooltip(InformationTooltip)
+                                                            end
+                                                        end)
+                 ZO_PlayerInventory_InitSortHeaderIcon(self, 
+                                    "EsoUI/Art/Miscellaneous/list_sortHeader_icon_neutral.dds", 
+                                    "EsoUI/Art/Miscellaneous/list_sortHeader_icon_sortUp.dds", 
+                                    "EsoUI/Art/Miscellaneous/list_sortHeader_icon_sortDown.dds", 
+                                    "EsoUI/Art/Miscellaneous/list_sortHeader_icon_over.dds", 
+                                    "age")                                                        
+            </OnInitialized>
+        </Control>
+    </Controls>
+</GuiXml>
