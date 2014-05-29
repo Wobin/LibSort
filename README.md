@@ -1,5 +1,6 @@
 #LibSort 1.0
 
+##Details
 
 Currently, the way ESO sorts items is essentially by column, you have a data point for each item, eg, **name** and you sort the list of objects by that data point.
 
@@ -46,3 +47,24 @@ and we will end up sorting by the type of weapon returned by that function. (Not
 ---
 
 In any case, now that we know what we need to do, this library should do most of the heavy lifting for you. Chances are I'll have to give it it's own Settings panel so people can reorder the sort order as they wish, but you should be able to register your addon to allow data injection and process the index/bag combinations to store whatever datapoints you want.
+
+---
+##API
+
+###Register
+    LibSort:Register(addonName, name, desc, key, func)
+
+(Note this is an alias for **RegisterNumeric** and will assume a numeric sortKey)
+- *addonName* - The name of the registering addon 
+    + Example: "Item Sort"
+- *name* - A unique registration name 
+    + Example: "ISWeaponSort"
+- *desc* - A description of how the sort applies 
+    + Example: "Will sort by Weapon Type"
+- *key* - A unique key used to identify the datapoint
+    + Example: "weaponType"
+- *func* - The function to call to retrieve the sort value. Function signature **needs** to be (slotType, bag, index)
+    + Example: ItemSort.WeaponSort
+
+###RegisterNumeric
+    LibSort:RegisterNumeric(addonName, name, desc, key, func)
