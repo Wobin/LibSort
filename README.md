@@ -1,6 +1,13 @@
 #LibSort 1.0
 
-##Details
+**Table of Contents**  
+- [Details](#user-content-details)
+- [API](#user-content-api)
+    - [Register](#user-content-register)
+    - [RegisterNumeric](#user-content-registernumeric)
+
+
+##Rationale
 
 Currently, the way ESO sorts items is essentially by column, you have a data point for each item, eg, **name** and you sort the list of objects by that data point.
 
@@ -52,6 +59,8 @@ In any case, now that we know what we need to do, this library should do most of
 ##API
 
 ###Register
+This will register a numeric sortKey
+    
     LibSort:Register(addonName, name, desc, key, func)
 
 (Note this is an alias for **RegisterNumeric** and will assume a numeric sortKey)
@@ -67,4 +76,39 @@ In any case, now that we know what we need to do, this library should do most of
     + Example: ItemSort.WeaponSort
 
 ###RegisterNumeric
+This will register a numeric sortKey
+    
     LibSort:RegisterNumeric(addonName, name, desc, key, func)
+Arguments as above
+
+###RegisterBoolean
+This will register a boolean sortKey
+    
+    LibSort:RegisterBoolean(addonName, name, desc, key, func)
+Arguments as above
+
+###RegisterString
+This will register a string sortKey
+
+    LibSort:RegisterString(addonName, name, desc, key, func)
+Arguments as above
+
+###Unregister
+This will unregister a sortKey registration
+
+    LibSort:Unregister(addonName, name)
+
+- *addonName* - The name of the registering addon 
+    + Example: "Item Sort"
+- *name* - A unique registration name 
+    + Example: "ISWeaponSort"
+
+###RegisterDefaultOrder
+Your addon may have multiple registrations, and this function will allow you to indicate what order you want them in as a block
+
+    LibSort:RegisterDefaultOrder(addonName, keyTable)
+
+- *addonName* -The name of the registering addon
+    + Example: "Item Sort"
+- *keyTable* - A table indicating the order of sortKeys for this addon
+    + Example: {"weaponType", "armorEquipType", "armorType", "subjectiveItemLevel"}
