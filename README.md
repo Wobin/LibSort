@@ -1,11 +1,14 @@
 #LibSort 1.0
 
 **Table of Contents**  
-- [Details](#user-content-details)
-- [API](#user-content-api)
-    - [Register](#user-content-register)
-    - [RegisterNumeric](#user-content-registernumeric)
-
+- [Rationale](#user-content-rationale)
+    - [API](#user-content-api)
+        - [Register](#user-content-register)
+        - [RegisterNumeric](#user-content-registernumeric)
+        - [RegisterBoolean](#user-content-registerboolean)
+        - [RegisterString](#user-content-registerstring)
+        - [Unregister](#user-content-unregister)
+        - [RegisterDefaultOrder](#user-content-registerdefaultorder)
 
 ##Rationale
 
