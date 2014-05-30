@@ -23,10 +23,7 @@ That's well and fine for what's existing in the current set of datapoints, howev
 
 To do this, however, we need to inject the required datapoints into the list object so that it has the required information to process the sort order as ascertained by our adjustment of how the tiebreakers chain together.
 
-	ZO_Inventory_BindSlot(control, slotType, index, bag) 
-
-is the function we need to hook. It's a C side function, which means we don't actually know what it does exactly, but we don't need to. We might be able to prehook it, but chances are it recreates the data object so any
-prehooking work would be wiped out. So we posthook it.
+First we prehook ChangeSort. This will allow us to pick out the inventory being looked at, process the entries in there to inject the appropriate information, and then pass back to the original ChangeSort for the actual sorting.
 
 We now have information about the item, where it's from (*slotType*) and where it is (*bag* and *index*)
 
