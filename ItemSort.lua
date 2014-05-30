@@ -1,5 +1,7 @@
 ItemSort = {}
 
+local LibSort = LibStub("LibSort-1.0", 1)
+
 local watchedSlots = {[SLOT_TYPE_GUILD_BANK_ITEM] = true, [SLOT_TYPE_ITEM] = true, [SLOT_TYPE_BANK_ITEM] = true }
 
 local IS_WEAPON = { [EQUIP_TYPE_MAIN_HAND] = true, [EQUIP_TYPE_OFF_HAND] = true, [EQUIP_TYPE_ONE_HAND] = true, [EQUIP_TYPE_TWO_HAND] = true}
@@ -48,57 +50,42 @@ function ItemSort:Loaded(...)
 	local eventCode, addonName = ...
 	if addonName ~= "ItemSort" then return end
 
-	ItemSort.hookedFunction = ZO_Inventory_BindSlot
-	ZO_Inventory_BindSlot = 
-		function(...)
-			ItemSort.hookedFunction(...)
-			local control, slotType, index, bag = ...
-			local slot = control:GetParent()
+	
+	LibSort:RegisterDefaultOrder("Item Sort", {"Weapon Type", "Armour Equip Type", "Armour Type", "Subjective Level"})
 
-			if not slot or not slot.dataEntry or not slot.dataEntry.data then return end
-			
-			-- Damnit, it's a subjective item level
-			local iLevel = GetItemLevel(bag, index)
+	LibSort:Register("Item Sort", "Subjective Level", "The calculated subjective level", "subjectiveLevel", function(slotType, bag, index) return GetItemLevel(bag, index) end)
+	LibSort:Register("Item Sort", "Weapon Type", "The type of weapon", "weaponType", function(...) return ItemSort:WeaponType(...) end)
+	LibSort:Register("Item Sort", "Armour Type", "The weight of armour", "armorType", function(...) return ItemSort:ArmorType(...) end)
+	LibSort:Register("Item Sort", "Armour Equip Type", "The type of armour", "armorEquipType", function(...) return ItemSort:ArmourEquipType(...) end)
+end
 
-			slot.dataEntry.data.subjectiveItemLevel = iLevel
-			slot.dataEntry.data.weaponType = 0
-			slot.dataEntry.data.armorType = 0
-
-			if watchedSlots[slotType] then
-				local _, _, _, _, _, equipType = GetItemInfo(bag, index)
-				slot.dataEntry.data.armorEquipType = ARMOUR_ORDER[equipType] or 0
-				if equipType > 0 then
-					local link = GetItemLink(bag, index)
-									
-					if IS_WEAPON[equipType] then
-						slot.dataEntry.data.weaponType = WEAPON_ORDER[GetItemWeaponType(link)]
-					else
-						slot.dataEntry.data.armorType = GetItemArmorType(link)
-					end
-				end
+function ItemSort:WeaponType(slotType, bag, index)
+	if watchedSlots[slotType] then
+		local _, _, _, _, _, equipType = GetItemInfo(bag, index)		
+		if equipType > 0 then
+			if IS_WEAPON[equipType] then
+				return WEAPON_ORDER[GetItemWeaponType(GetItemLink(bag, index))]
 			end
-		end	
-	local sortKeys = ZO_Inventory_GetDefaultHeaderSortKeys()
-	sortKeys["weaponType"] = {isNumeric = true, tiebreaker = "armorEquipType"}
-	sortKeys["armorEquipType"] = {isNumeric = true, tiebreaker = "armorType"}
-	sortKeys["armorType"] = {isNumeric = true, tiebreaker = "subjectiveItemLevel"}
-	sortKeys["subjectiveItemLevel"] = {isNumeric = true, tiebreaker = "name"}
-	sortKeys["age"] = { tiebreaker = "weaponType", isNumeric = true }
-
-	zo_callLater(ItemSort.SetupArrows, 100)
+		end
+	end
 end
 
-function ItemSort:SetupArrows()
-
-	ItemSortBank:SetParent(ZO_PlayerBankSortBy)
-	PLAYER_INVENTORY.inventories[INVENTORY_BANK].sortHeaders:AddHeader(ItemSortBank)
-	
-	ItemSortGuild:SetParent(ZO_GuildBankSortBy)
-	PLAYER_INVENTORY.inventories[INVENTORY_GUILD_BANK].sortHeaders:AddHeader(ItemSortGuild)
-	
-
-	ZO_PreHook(PLAYER_INVENTORY, "ChangeSort", function(self, key, inventoryType, order) d(inventoryType) PLAYER_INVENTORY.inventories[inventoryType].sortFn = nil end)	
+function ItemSort:ArmorType(slotType, bag, index)
+	if watchedSlots[slotType] then
+		local _, _, _, _, _, equipType = GetItemInfo(bag, index)
+		if equipType <= 9 and equipType > 0  then
+			return GetItemArmorType(GetItemLink(bag, index))
+		end
+	end
 end
+
+function ItemSort:ArmourEquipType(slotType, bag, index)
+	if watchedSlots[slotType] then
+		local _, _, _, _, _, equipType = GetItemInfo(bag, index)
+		return ARMOUR_ORDER[equipType] 
+	end
+end
+
 
 
 EVENT_MANAGER:RegisterForEvent("ItemSortLoaded", EVENT_ADD_ON_LOADED, function(...) ItemSort:Loaded(...) end)

@@ -115,3 +115,10 @@ Your addon may have multiple registrations, and this function will allow you to 
     + Example: "Item Sort"
 - *keyTable* - A table indicating the order of sortKeys for this addon
     + Example: {"weaponType", "armorEquipType", "armorType", "subjectiveItemLevel"}
+
+###SetDebugging
+Set the debug flag for the library
+
+    LibSort:SetDebugging(flag)
+
+- *flag* - a boolean indicating if you wish to have debug messages

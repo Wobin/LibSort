@@ -3,5 +3,7 @@
 ## Version: @project-version@
 ## APIVersion: 100004
 
+Libs/LibStub/LibStub-1.0.lua
+Libs/LibSort/LibSort-1.0.lua
+
 ItemSort.lua
-ItemSort.xml
