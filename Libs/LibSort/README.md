@@ -104,14 +104,17 @@ This will unregister a sortKey registration
     + Example: "ISWeaponSort"
 
 ###RegisterDefaultOrder
-Your addon may have multiple registrations, and this function will allow you to indicate what order you want them in as a block
+Your addon may have multiple registrations, and this function will allow you to indicate what order you want them in as a block. There are two tables you can pass in, for low level and high level keys. Low level keys are values that are unique to certain types of items, like weaponType, and armourType. High level keys are those linked to values that are common across larger swathes of items, like item level, or name. If you separate your keys in the two tables, LibSort will first chain all the low level keys before all high level keys, so that multiple addons can apply sort orders without getting cut off. (It's highly recommended that you split keys if you use high level definitions)
 
-    LibSort:RegisterDefaultOrder(addonName, keyTable)
+Default behaviour, by not using this API call will be order of registration at a high level to avoid breaking other registrations
+
+    LibSort:RegisterDefaultOrder(addonName, keyTableLow, keyTableHigh)
 
 - *addonName* -The name of the registering addon
     + Example: "Item Sort"
-- *keyTable* - A table indicating the order of sortKeys for this addon
+- *keyTableLow* - A table indicating the order of low level sortKeys for this addon
     + Example: {"weaponType", "armorEquipType", "armorType", "subjectiveItemLevel"}
+- *keyTableHigh* - **Optional** A table indicating of the order of high level sortKeys for this addon
 
 ###SetDebugging
 Set the debug flag for the library

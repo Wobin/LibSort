@@ -27,7 +27,8 @@ end
 --- Storage variables ---
 LibSort.RegisteredCallbacks = {}
 LibSort.AddonOrder = {}
-LibSort.DefaultOrders = {}
+LibSort.DefaultOrdersLow = {}
+LibSort.DefaultOrdersHigh = {}
 
 --- Arrow generation ---
 
@@ -86,26 +87,32 @@ function LibSort:InjectKeys()
 				self.sortKeys[data.key][data.dataType] = true
 			end	
 		end
-	end
+	end	
 	self:ReOrderKeys()
 end
 
 function LibSort:ReOrderKeys()
 	local first 
 	local previous
-	for i, addonName in ipairs(self.AddonOrder) do
-		if self.DefaultOrders[addonName] then
-			for _, name in ipairs(self.DefaultOrders[addonName]) do
+	for i, addonName in ipairs(self.AddonOrder) do		
+		if self.DefaultOrdersLow[addonName] then
+			for _, name in ipairs(self.DefaultOrdersLow[addonName]) do
 				local data = self.RegisteredCallbacks[addonName][name] 
 				if data then -- we skip the ones we haven't registered yet
 					first, previous = self:SetKeyOrder(first, previous, data)
 				end
 			end
-		else
-			for name, data in pairs(self.RegisteredCallbacks[addonName]) do
-				first, previous = self:SetKeyOrder(first, previous, data)
-			end
 		end
+	end
+	for i, addonName in ipairs(self.AddonOrder) do		
+		if self.DefaultOrdersHigh[addonName] then
+			for _, name in ipairs(self.DefaultOrdersHigh[addonName]) do
+				local data = self.RegisteredCallbacks[addonName][name] 
+				if data then -- we skip the ones we haven't registered yet
+					first, previous = self:SetKeyOrder(first, previous, data)
+				end
+			end
+		end					
 	end
 	self.sortKeys[previous].tiebreaker = "name"
 	PLAYER_INVENTORY:ChangeSort("age", INVENTORY_BACKPACK, true)
@@ -122,9 +129,8 @@ function LibSort:SetKeyOrder(first, previous, data)
 		if previous then
 			self.sortKeys[previous].tiebreaker = data.key					
 		end
-	end
-	previous = data.key
-	return first, previous
+	end	
+	return first, data.key
 end
 
 function LibSort:ProcessInventory(inventoryType)	
@@ -166,6 +172,8 @@ function LibSort:Register(addonName, name, desc, key, func, dataType)
 	if not dataType then dataType = "isNumeric" end
 	if not self.RegisteredCallbacks[addonName] then self.RegisteredCallbacks[addonName] = {} table.insert(self.AddonOrder, addonName) end
 	self.RegisteredCallbacks[addonName][name] = {key = makePrefix(addonName)..key, func = func, desc = desc, dataType = dataType}
+	if not self.DefaultOrdersHigh[addonName] then self.DefaultOrdersHigh[addonName] = {} end
+	table.insert(self.DefaultOrdersHigh[addonName], name)
 	self:InjectKeys()
 end
 
@@ -181,8 +189,10 @@ function LibSort:RegisterString(addonName, name, desc, key, func)
 	self:Register(addonName, name, desc, key, func, "isString")
 end
 
-function LibSort:RegisterDefaultOrder(addonName, keyTable)
-	self.DefaultOrders[addonName] = keyTable
+function LibSort:RegisterDefaultOrder(addonName, keyTableLow, keyTableHigh)
+	self.DefaultOrdersHigh[addonName] = keyTableHigh
+	self.DefaultOrdersLow[addonName] = keyTableLow
+	self:ReOrderKeys()
 end
 
 function LibSort:SetDebugging(flag)
