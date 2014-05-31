@@ -163,6 +163,13 @@ EVENT_MANAGER:RegisterForEvent("LibSortLoaded", EVENT_ADD_ON_LOADED, function(..
 --------- API ---------
 
 function LibSort:Unregister(addonName, name)
+	if not name then 
+		self.RegisteredCallbacks[addonName] = nil
+		self.DefaultOrdersHigh[addonName] = nil
+		self.DefaultOrdersLow[addonName] = nil
+		return
+	end
+
 	if self.RegisteredCallbacks[addonName] then
 		self.RegisteredCallbacks[addonName][name] = nil
 	end
